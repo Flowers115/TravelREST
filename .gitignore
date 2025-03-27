@@ -1,0 +1,26 @@
+# PHP
+/vendor/
+/node_modules/
+/.env
+/.env.*
+/.phpunit.result.cache
+
+# Logs
+/storage/logs/*.log
+
+# Cache e sessioni
+/storage/framework/
+/bootstrap/cache/
+
+# Database
+/database/*.sqlite
+/database/*.sqlite-journal
+/config/database.php
+
+# Editor
+.idea/
+.vscode/
+
+# System
+.DS_Store
+Thumbs.db
