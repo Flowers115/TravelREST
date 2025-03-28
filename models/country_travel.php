@@ -1,4 +1,7 @@
 <?php
+
+require_once 'config/database.php';
+
 class Country_Travel {
     private $conn;
     private $table_name = "Travel_Country";

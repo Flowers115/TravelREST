@@ -5,14 +5,16 @@ class TravelController {
 
     // Mostra tutti i viaggi (Read All)
     public function index() {
-        $destinations = Travel::getAll(); //Travel è la classe presente in models/travel.php
-        echo json_encode($destinations); // Restituisce i dati come JSON
+        $database = new Database();
+        $db = $database->getConnection();
+        $travel = Travel::getAll($db); //Travel è la classe presente in models/travel.php
+        echo json_encode($travel); // Restituisce i dati come JSON
     }    
 
     // Mostra un singol viaggio (Read One)
     public function read($id) {
-        $destination = Travel::getById($id);
-        echo json_encode($destination); // Restituisce i dati come JSON
+        $travel = Travel::getById($id);
+        echo json_encode($travel); // Restituisce i dati come JSON
     }    
 
     // Aggiunge un nuovo viaggio (Create)

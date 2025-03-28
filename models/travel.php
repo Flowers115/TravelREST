@@ -1,4 +1,7 @@
 <?php
+
+require_once 'config/database.php';
+
 class Travel {
     private $conn;
     private $table_name = "Travel";
@@ -15,10 +18,37 @@ class Travel {
 
     // Leggere i viaggi dal database
     function read() {
+        // Query per selezionare tutti i viaggi
         $query = "SELECT idTravel, Travel, Places_Avables FROM " . $this->table_name;
+
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
+
         return $stmt;
+    }
+
+    // Metodo getAll()
+    public static function getAll($db) {
+        // Crea un'istanza della classe Travel
+        $travel = new Travel($db);
+    
+        // Richiama il metodo read() per ottenere i dati
+        $stmt = $travel->read();
+            
+        $travel = [];
+            
+        // Itera sui risultati e restituisci un array di viaggi
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            extract($row);
+            $travel_item = [
+                'idTravel' => $idTravel,
+                'Travel' => $Travel,
+                'Places_Avables' => $Places_Avables
+            ];
+            array_push($travels, $travel_item);
+        }
+    
+        return $travels;
     }
 
     // Metodo per creare un nuovo viaggio
