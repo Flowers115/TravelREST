@@ -4,7 +4,7 @@ Questo progetto è stato realizzato per aiutare un'agenzia di viaggi a trovare m
 
 🚀 Requisiti
 
-Linguaggi: PHP, SQL, JavaScript, HTML, CSS
+Linguaggi: PHP, SQL
 
 Database: MySQL
 
@@ -16,9 +16,15 @@ Strumenti di Sviluppo: MAMP, phpMyAdmin, Visual Studio Code, Postman
 
 config/ → Contiene il file database.php
 
-models/ → Contiene i file country_travel.php, country.php e travel.php
+controllers/ → Contiene i file countryController.php, travel_countryController.php e travelController.php
 
-Travel → Contiene i file CRUD: create.php, read.php, update.php e delete.php
+models/ → Contiene i file travel_country.php, country.php e travel.php
+
+routes.php → Il file mappa URL a funzioni o script che gestiscono le richieste HTTP.
+
+.gitignore → file per nascondere altri file con informazioni sensibili (es: dati per il db)
+
+README.md → file per la descrizione del progetto
 
 📝 Link GitHub
 
