@@ -91,8 +91,6 @@ class Country {
             echo json_encode(["message" => "Cancellazione fallita", "error" => $errorInfo]);
             return false;
         }
-    }
-    
-    
+    }  
 }
 ?>

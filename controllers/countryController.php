@@ -117,10 +117,8 @@ class CountryController {
         if ($country->delete()) {
             echo json_encode(["message" => "Paese cancellato con successo."]);
         } else {
-            echo json_encode(["message" => "Fallimento nella cancellazione del paese."]);
+            echo json_encode(["message" => "Impossibile cancellare il paese."]);
         }
-    }
-    
-    
+    }  
 }
 ?>

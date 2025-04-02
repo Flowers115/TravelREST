@@ -1,116 +1,115 @@
 <?php
-
-
-// Includi i controller
-require_once 'controllers/countryController.php';
 require_once 'controllers/travelController.php';
+require_once 'controllers/countryController.php';
+require_once 'controllers/travel_countryController.php';
+require_once 'config/database.php';
 
-// Ottieni il metodo HTTP (GET, POST, PUT, DELETE)
+date_default_timezone_set('UTC');
+
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
 $method = $_SERVER['REQUEST_METHOD'];
+$resource = isset($_GET['resource']) ? $_GET['resource'] : null;
+$action = isset($_GET['action']) ? $_GET['action'] : null;
 
-// Debugging: verifica il metodo e i parametri ricevuti
-// var_dump($method, $_GET);
-// exit;
-
-// Ottieni l'azione dalla URL
-$action = isset($_GET['action']) ? $_GET['action'] : null; 
-
-// Controlliamo che l'azione sia stata fornita
-if (!$action) {
-    echo json_encode(["message" => "Azione non valida!"]);
+if (!$resource) {
+    echo json_encode(["message" => "Risorsa non specificata (usa ?resource=country o ?resource=travel)."]);
     exit;
 }
 
-// Gestisci la richiesta per i paesi (country)
-if (isset($_GET['action'])) {
-    $countryController = new CountryController();
-
-    switch ($action) {
-        case 'index':
-            if ($method === 'GET') {
-                $countryController->index();
-            }
-            break;
-
-        case 'read':
-            if ($method === 'GET' && isset($_GET['id'])) {
-                $countryController->read($_GET['id']);
-            }
-            break;
-
-        case 'create':
-            if ($method === 'POST') {
-                $countryController->create($_POST);
-            }
-            break;
-
-        case 'update':
-            if ($method === 'PUT' && isset($_GET['id'])) {
-                // Leggi i dati JSON dal body della richiesta
-                $data = json_decode(file_get_contents("php://input"), true);
-                if (!$data) {
-                    echo json_encode(["message" => "Dati non validi o mancanti nel corpo della richiesta."]);
-                    exit;
+switch ($resource) {
+    case 'travel':
+        $travelController = new TravelController();
+        switch ($action) {
+            case 'create':
+                if ($method === 'POST') {
+                    $data = json_decode(file_get_contents("php://input"), true);
+                    $travelController->create($data);
                 }
-                $countryController->update($_GET['id'], $data);
-            }
-            break;
-
-        case 'delete':
+                break;
+            case 'read':
+                if ($method === 'GET') {
+                    if (isset($_GET['id'])) {
+                        $travelController->read($_GET['id']);
+                    } else {
+                        $travelController->readAll();
+                    }
+                }
+                break;
+            case 'update':
+                if ($method === 'PUT') {
+                    $data = json_decode(file_get_contents("php://input"), true);
+                    $travelController->update($data);
+                }
+                break;
             case 'delete':
                 if ($method === 'DELETE' && isset($_GET['id'])) {
-                    
-                    $countryController = new CountryController();
+                    $travelController->delete($_GET['id']);
+                }
+                break;
+        }
+        break;
+    
+    case 'country':
+        $countryController = new CountryController();
+        switch ($action) {
+            case 'create':
+                if ($method === 'POST') {
+                    $data = json_decode(file_get_contents("php://input"), true);
+                    $countryController->create($data);
+                }
+                break;
+            case 'read':
+                if ($method === 'GET') {
+                    if (isset($_GET['id'])) {
+                        $countryController->read($_GET['id']);
+                    } else {
+                        $countryController->readAll();
+                    }
+                }
+                break;
+            case 'update':
+                if ($method === 'PUT') {
+                    $data = json_decode(file_get_contents("php://input"), true);
+                    $countryController->update($data);
+                }
+                break;
+            case 'delete':
+                if ($method === 'DELETE' && isset($_GET['id'])) {
                     $countryController->delete($_GET['id']);
                 }
                 break;
-            }            
-}
-// Gestisci le richieste per i viaggi (travel)
-else if (isset($_GET['action']) && $_GET['action'] === 'travel') {
-    // Routing per i viaggi
-    switch ($action) {
-        case 'index':
-            if ($method === 'GET') {
-                $travelController = new TravelController();
-                $travelController->index();
-            }
-            break;
-
-        case 'read':
-            if ($method === 'GET' && isset($_GET['id'])) {
-                $travelController = new TravelController();
-                $travelController->read($_GET['id']);
-            }
-            break;
-
-        case 'create':
-            if ($method === 'POST') {
-                $travelController = new TravelController();
-                $travelController->create($_POST);
-            }
-            break;
-
-        case 'update':
-            if ($method === 'PUT' && isset($_GET['id'])) {
-                $travelController = new TravelController();
-                parse_str(file_get_contents("php://input"), $data);  // Leggi i dati dalla richiesta PUT
-                $travelController->update($_GET['id'], $data);  // Passa l'ID e i dati per l'aggiornamento
-            }
-            break;
-
-        case 'delete':
-            if ($method === 'DELETE' && isset($_GET['id'])) {
-                $travelController = new TravelController();
-                $travelController->delete($_GET['id']);
-            }
-            break;
-
-        default:
-            echo json_encode(["message" => "Azione non trovata per i viaggi!"]);
+        }
+        break;
+    
+    case 'travel_country':  // Modificato da country_travel a travel_country
+        $travelCountryController = new TravelCountryController();
+        switch ($action) {
+            case 'create':
+                if ($method === 'POST') {
+                    $data = json_decode(file_get_contents("php://input"), true);
+                    $travelCountryController->create($data);
+                }
+                break;
+            case 'delete':
+                if ($method === 'DELETE') {
+                    $data = json_decode(file_get_contents("php://input"), true);
+                    $travelCountryController->delete($data);
+                }
+                break;
+            case 'get_countries':
+                if ($method === 'GET' && isset($_GET['idTravel'])) {
+                    $travelCountryController->getCountriesByTravel($_GET['idTravel']);
+                }
+                break;
+        }
+        break;
+    
+    default:
+        echo json_encode(["message" => "Risorsa non riconosciuta."]);
+        break;
     }
-} 
-// Se non viene trovata nessuna azione valida
-else {
-    echo json_encode(["message" => "Azione non valida!"]);
-}
+?>
